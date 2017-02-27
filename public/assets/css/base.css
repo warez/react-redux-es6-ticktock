@@ -1,0 +1,27 @@
+body {
+    background: #fff;
+    font-size: 1.1em;
+    line-height: 1.2;
+    padding: 50px;
+}
+
+.home {
+    padding: 20px 0 20px 20px;
+    border: 1px solid #eee;
+}
+
+.homeAddress {
+    float: left;
+    margin: 2em 1em 1em;
+    font-size: 1.2em;
+}
+
+.saves {
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+.saves form {
+    display: inline;
+    margin-right: 10px;
+}
