@@ -2,6 +2,7 @@ import {Constant, TTModel} from './core.jsx'
 
 export function goToStateAction(index:number) {
     return {
+        meta: {remote: true},
         type: Constant.GOTO_STATE,
         param: index
     };
@@ -9,6 +10,7 @@ export function goToStateAction(index:number) {
 
 export function moveAction(title:string, index:number) {
     return{
+        meta: {remote: true},
         type: Constant.MOVE,
         param: index
     };
@@ -16,6 +18,7 @@ export function moveAction(title:string, index:number) {
 
 export function restartAction() {
     return {
+        meta: {remote: true},
         type: Constant.RESTART,
         param: undefined
     };

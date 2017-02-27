@@ -45,11 +45,14 @@ export function makeStore(socket) {
                 // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
             }) : compose;
 
-    const enhancer = composeEnhancers(
-        /*applyMiddleware(
+    /*const enhancer = composeEnhancers(
+        applyMiddleware(
             remoteActionMiddleware(socket)
-        )*/
-    );
+        )
+    );*/
+
+    const enhancer = applyMiddleware( remoteActionMiddleware(socket) );
+
     const store = createStore(reducer, enhancer);
     return store;
 }
