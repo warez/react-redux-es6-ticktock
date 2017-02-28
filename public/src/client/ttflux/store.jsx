@@ -1,4 +1,4 @@
-import {Constant, TTModel, move, setState, jumpToState, restart} from './core.jsx'
+import {Constant, TTModel, move, setState, jumpToState, restart, setMyTeam} from './core.jsx'
 import { createStore, applyMiddleware, compose } from 'redux';
 
 function reducer(state = new TTModel(), action): TTModel {
@@ -12,7 +12,7 @@ function reducer(state = new TTModel(), action): TTModel {
             return jumpToState(state, action.param);
 
         case Constant.MOVE:
-            return move(state, action.param);
+            return move(state, action.param.team, action.param.index);
 
         case Constant.RESTART:
             return restart(state);
@@ -37,22 +37,12 @@ const remoteActionMiddleware = socket => store => next => action => {
 
 export function makeStore(socket) {
 
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-    const composeEnhancers =
-        typeof window === 'object' &&
-        window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-            window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-                // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
-            }) : compose;
-
-    /*const enhancer = composeEnhancers(
-        applyMiddleware(
-            remoteActionMiddleware(socket)
+    const store = createStore(reducer,
+        composeEnhancers(
+            applyMiddleware( remoteActionMiddleware(socket) )
         )
-    );*/
-
-    const enhancer = applyMiddleware( remoteActionMiddleware(socket) );
-
-    const store = createStore(reducer, enhancer);
+    );
     return store;
 }

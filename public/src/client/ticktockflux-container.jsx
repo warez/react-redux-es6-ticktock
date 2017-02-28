@@ -16,7 +16,7 @@ function mapStateToProps(state : TTModel) {
 const actions = function mapDispatchToProps(dispatch) {
 
     return {
-        move: (title,index) => dispatch(moveAction(title, index)),
+        move: (title,team, index) => dispatch(moveAction(title, team, index)),
         goToState: (index) => dispatch(goToStateAction(index)),
         restart: () => dispatch(restartAction())
     };

@@ -18,6 +18,11 @@ export class WinnerState extends WinnerStateRecord {
 const HistoryModelRecord = Record({
     squares: List(new Array(9).fill(undefined))
 });
+
+const ClientPropRecord = Record({
+    team: undefined
+});
+
 export class HistoryModel extends HistoryModelRecord {
 
     constructor(props) {
@@ -26,14 +31,16 @@ export class HistoryModel extends HistoryModelRecord {
 }
 
 const TTModelRecord = Record({
+    clientProp: new ClientPropRecord(),
     stepNumber: 0,
     xIsNext: true,
     winnerState: new WinnerStateRecord(),
     history: List( [new HistoryModel()] )
 });
+
 export class TTModel extends TTModelRecord {
 
-    constructor(props) {
+        constructor(props) {
         super(props);
     }
 
@@ -41,22 +48,6 @@ export class TTModel extends TTModelRecord {
 
 export function restart(state:TTModel) {
     return new TTModel();
-}
-
-export function jumpToState(state:TTModel, step: number) {
-    const stepNumber = parseInt(step);
-    const history = state.history;
-    const current = history.get(step);
-    const squares = current.squares;
-
-    const winnerState = calculateWinner(squares);
-
-    return new TTModel( {
-        stepNumber: stepNumber,
-        xIsNext: (!(step % 2)),
-        winnerState: winnerState,
-        history: List(state.history.slice(0,stepNumber + 1)),
-    });
 }
 
 export function restartAction(state:TTModel) {
@@ -79,13 +70,19 @@ export function jumpToStateAction(state:TTModel, step: number) {
     });
 }
 
-export function moveAction(state:TTModel, i: number) {
+export function moveAction(state:TTModel, team: string, i: number) {
 
     if(state.winnerState.winnerSymbol)
         return state;
 
+    if(!state.get("xIsNext") && team == 'X')
+        return state;
+
+    if(state.get("xIsNext") && team == 'O')
+        return state;
+
     const history = state.history;
-    var current = history.get(history.size - 1 );
+    const current = history.get(history.size - 1 );
 
     const squares = current.squares.set(i, state.xIsNext ? 'X' : 'O');
     const winnerState = calculateWinner(squares);

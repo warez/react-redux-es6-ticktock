@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-
+import {isMyMove} from './ttflux'
 import 'styles/ticktock.css';
 
 export class History extends React.Component {
@@ -31,6 +31,7 @@ export class Board extends React.Component {
 
         const val = this.props.state.get(i);
         const winnerState = this.props.winnerState;
+        const team = this.props.team;
         const isCellWinner =
             winnerState.get("winnerSymbol") &&
             winnerState.get("winnerSymbol") == val &&
@@ -39,7 +40,7 @@ export class Board extends React.Component {
         return <button title={cellTitle}
                        key={"square_" + i}
                        className={"square " + (isCellWinner ? 'winner' : '')}
-                       onClick={() => this.props.move(cellTitle, i)}>
+                       onClick={() => this.props.move(cellTitle, team, i)}>
 
             {val}
 
@@ -107,17 +108,22 @@ export class TickTock extends React.Component {
         const winner = !!winnerState.get("winnerSymbol");
         const current = history.get(state.get("stepNumber"));
 
-        let status;
+        const team = state.get("clientProp") ? state.get("clientProp").get("team") : 'wait..';
+        let status, youAre = "You are: " + team;
+
         if (winner) {
-            status = 'Winner: ' + winnerState.get("winnerSymbol");
+
+            status = ( winnerState.get("winnerSymbol") == team ) ? 'You win!!!! :D' : "You lose :(";
         } else {
-            status = 'Next player: ' + (state.get("xisNext") ? 'X' : 'O');
+
+            status = ( isMyMove(state) ) ? 'Make a move...' : 'Wait opponent...';
         }
 
         return ( <div className="game">
                 <div className="game-board">
 
                     <Board
+                        team={team}
                         state={current.get("squares")}
                         winnerState={winnerState}
                         move={this.props.move}
@@ -126,6 +132,9 @@ export class TickTock extends React.Component {
                 </div>
                 <div className="game-info">
 
+                    <div className="status">
+                        {youAre}
+                    </div>
                     <div className="status">
                         {status} { winner && <button onClick={() => this.props.restart()}>Restart</button> }
                     </div>

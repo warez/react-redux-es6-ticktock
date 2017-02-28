@@ -18,6 +18,9 @@ export class WinnerState extends WinnerStateRecord {
 const HistoryModelRecord = Record({
     squares: List(new Array(9).fill(undefined))
 });
+
+const ClientPropRecord = Record({team: undefined});
+
 export class HistoryModel extends HistoryModelRecord {
 
     constructor(props) {
@@ -27,6 +30,7 @@ export class HistoryModel extends HistoryModelRecord {
 }
 
 const TTModelRecord = Record({
+    clientProp: new ClientPropRecord(),
     stepNumber: 0,
     xIsNext: true,
     winnerState: new WinnerStateRecord(),
@@ -42,7 +46,7 @@ export class TTModel extends TTModelRecord {
 }
 
 export function restart(state:TTModel) {
-    return new TTModel();
+    return new TTModel({clientProp: state.get("clientProp")});
 }
 
 export function jumpToState(state:TTModel, step: number) {
@@ -62,23 +66,28 @@ export function jumpToState(state:TTModel, step: number) {
 }
 
 export function setState(state:TTModel, newState:TTModel) {
-    return state.merge(newState);
+
+    const mergedState = state.mergeDeep(newState);
+    return mergedState;
 }
 
-export function move(state:TTModel, i: number) {
+export function move(state:TTModel, team:string, i: number) {
 
-    if(state.getIn("winnerState.winnerSymbol"))
+    if(state.get("winnerState").get("winnerSymbol"))
+        return state;
+
+    if(!isMyMove(state))
         return state;
 
     const history = state.get("history");
-    var current = history.get(history.size - 1 );
 
-    const squares = current.get("squares").set(i, state.get("xIsNext") ? 'X' : 'O');
+    const squares = history.get(history.size - 1 ).get("squares").set(i, state.get("xIsNext") ? 'X' : 'O');
     const winnerState = calculateWinner(squares);
     const newHistoryItem = new HistoryModel({ squares: squares});
     const newHistory = List(state.get("history")).push(newHistoryItem);
 
     const model = new TTModel( {
+        clientProp: state.get("clientProp"),
         stepNumber: state.get("stepNumber") + 1,
         xIsNext: !state.get("xIsNext"),
         winnerState: winnerState,
@@ -86,6 +95,14 @@ export function move(state:TTModel, i: number) {
     });
 
     return model;
+}
+
+export function isMyMove(state: Record) {
+
+    const team = state.get("clientProp").get("team");
+
+    return (state.get("xIsNext") &&  team == 'X') ||
+        ( !state.get("xIsNext") &&  team == 'O');
 }
 
 function calculateWinner(squares) {

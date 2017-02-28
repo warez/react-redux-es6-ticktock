@@ -23,6 +23,12 @@ socket.on('state', state => {
     }
 );
 
+/*socket.on('team', state => {
+        const _state =  fromJS(state);
+        store.dispatch(setStateAction(_state));
+    }
+);*/
+
 import 'styles/ticktock.css';
 
 ReactDOM.render( <Provider store={store}><TickTock/></Provider> , document.getElementById('ticktock') );

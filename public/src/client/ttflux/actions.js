@@ -8,11 +8,11 @@ export function goToStateAction(index:number) {
     };
 }
 
-export function moveAction(title:string, index:number) {
+export function moveAction(title:string, team: string, index:number) {
     return{
         meta: {remote: true},
         type: Constant.MOVE,
-        param: index
+        param: {team: team, index: index}
     };
 }
 
