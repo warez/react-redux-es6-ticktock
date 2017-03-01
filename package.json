@@ -28,6 +28,8 @@
     "es6-shim": "^0.35.0",
     "flux": "^3.1.2",
     "immutable": "^3.8.1",
+    "lodash": "^4.17.4",
+    "mongojs": "^2.4.0",
     "react": "^15.4.2",
     "react-addons-pure-render-mixin": "^15.4.2",
     "react-dom": "^15.4.2",

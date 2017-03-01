@@ -7,10 +7,10 @@ function goToStateAction(index:number) {
     };
 }
 
-function moveAction(team: string, id:number) {
+function moveAction(cellTitle: string, team: string, id:number) {
     return{
         type: Constant.MOVE,
-        param: {team: team, index: id}
+        param: {cellTitle: cellTitle, team: team, index: index}
     };
 }
 

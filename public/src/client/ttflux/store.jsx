@@ -12,7 +12,7 @@ function reducer(state = new TTModel(), action): TTModel {
             return jumpToState(state, action.param);
 
         case Constant.MOVE:
-            return move(state, action.param.team, action.param.index);
+            return move(state, action.param.cellTitle, action.param.team, action.param.index);
 
         case Constant.RESTART:
             return restart(state);

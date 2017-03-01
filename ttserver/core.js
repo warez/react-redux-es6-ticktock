@@ -16,12 +16,12 @@ export class WinnerState extends WinnerStateRecord {
 }
 
 const HistoryModelRecord = Record({
-    squares: List(new Array(9).fill(undefined))
-});
-
-const ClientPropRecord = Record({
+    squares: List(new Array(9).fill(undefined)),
+    moveAt: undefined,
     team: undefined
 });
+
+const ClientPropRecord = Record({team: undefined});
 
 export class HistoryModel extends HistoryModelRecord {
 
@@ -31,6 +31,7 @@ export class HistoryModel extends HistoryModelRecord {
 }
 
 const TTModelRecord = Record({
+    id: undefined,
     clientProp: new ClientPropRecord(),
     stepNumber: 0,
     xIsNext: true,
@@ -46,52 +47,47 @@ export class TTModel extends TTModelRecord {
 
 }
 
-export function restart(state:TTModel) {
-    return new TTModel();
-}
-
 export function restartAction(state:TTModel) {
     return new TTModel();
 }
 
 export function jumpToStateAction(state:TTModel, step: number) {
     const stepNumber = parseInt(step);
-    const history = state.history;
+    const history = state.get("history");
     const current = history.get(step);
-    const squares = current.squares;
+    const squares = current.get("squares");
 
     const winnerState = calculateWinner(squares);
 
     return new TTModel( {
+        id: state.get("id"),
         stepNumber: stepNumber,
         xIsNext: (!(step % 2)),
         winnerState: winnerState,
-        history: List(state.history.slice(0,stepNumber + 1)),
+        history: List(state.get("history").slice(0,stepNumber + 1)),
     });
 }
 
-export function moveAction(state:TTModel, team: string, i: number) {
+export function setStateAction(state:TTModel, newState:TTModel) {
+    return state.merge(newState);
+}
 
-    if(state.winnerState.winnerSymbol)
+export function moveAction(state:TTModel, cellTitle: string, team: string, i: number) {
+
+    if(state.get("winnerState").get("winnerSymbol"))
         return state;
 
-    if(!state.get("xIsNext") && team == 'X')
-        return state;
+    const history = state.get("history");
 
-    if(state.get("xIsNext") && team == 'O')
-        return state;
-
-    const history = state.history;
-    const current = history.get(history.size - 1 );
-
-    const squares = current.squares.set(i, state.xIsNext ? 'X' : 'O');
+    const squares = history.get(history.size - 1 ).get("squares").set(i, team);
     const winnerState = calculateWinner(squares);
-    const newHistoryItem = new HistoryModel({ squares: squares});
-    const newHistory = List(state.history).push(newHistoryItem);
+    const newHistoryItem = new HistoryModel({team: team, moveAt: cellTitle, squares: squares});
+    const newHistory = List(state.get("history")).push(newHistoryItem);
 
     const model = new TTModel( {
-        stepNumber: state.stepNumber + 1,
-        xIsNext: !state.xIsNext,
+        id: state.get("id"),
+        stepNumber: state.get("stepNumber") + 1,
+        xIsNext: !state.get("xIsNext"),
         winnerState: winnerState,
         history: newHistory
     });
@@ -99,8 +95,12 @@ export function moveAction(state:TTModel, team: string, i: number) {
     return model;
 }
 
-export function setStateAction(state:TTModel, newState:TTModel) {
-    return state.merge(newState);
+export function isMyMove(state: Record) {
+
+    const team = state.get("clientProp").get("team");
+
+    return (state.get("xIsNext") &&  team == 'X') ||
+        ( !state.get("xIsNext") &&  team == 'O');
 }
 
 function calculateWinner(squares) {

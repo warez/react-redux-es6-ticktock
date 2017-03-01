@@ -11,8 +11,7 @@ export class History extends React.Component {
         const history = this.props.history;
         const options = history.map((step, move) => {
 
-            const sign = (move % 2) ? 'X' : 'O';
-            const codeDesc = move ? sign + ' at ' + step.code : '';
+            const codeDesc = move ? step.get("team") + ' at ' + step.get("moveAt") : '';
             const desc = move ? codeDesc : 'Game start';
 
             return (
@@ -109,7 +108,7 @@ export class TickTock extends React.Component {
         const current = history.get(state.get("stepNumber"));
 
         const team = state.get("clientProp") ? state.get("clientProp").get("team") : 'wait..';
-        let status, youAre = "You are: " + team;
+        let status, youAre = "You are: " + team + " in game " + state.get("id");
 
         if (winner) {
 

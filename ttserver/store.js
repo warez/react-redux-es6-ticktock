@@ -3,6 +3,9 @@ import { createStore, applyMiddleware, compose} from 'redux';
 
 function reducer(state = new TTModel(), action): TTModel {
 
+    if(!action || !action.type)
+        return state;
+
     switch (action.type) {
 
         case Constant.SET_STATE:
@@ -12,7 +15,7 @@ function reducer(state = new TTModel(), action): TTModel {
             return jumpToStateAction(state, action.param);
 
         case Constant.MOVE:
-            return moveAction(state, action.param.team, action.param.index);
+            return moveAction(state, action.param.cellTitle, action.param.team, action.param.index);
 
         case Constant.RESTART:
             return restartAction(state);
@@ -24,12 +27,15 @@ function reducer(state = new TTModel(), action): TTModel {
     return state;
 }
 
-export function makeStore() {
+export function makeStore(id) {
 
     const enhancer = compose(
         //applyMiddleware(...middleware),
         // other store enhancers if any
     );
-    const store = createStore(reducer, enhancer);
+
+    const state = new TTModel({id: id});
+
+    const store = createStore(reducer, state, enhancer);
     return store;
 }
