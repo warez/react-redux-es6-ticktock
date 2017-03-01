@@ -14,7 +14,6 @@ function getEntrySources(sources) {
 
 module.exports = {
     entry: {
-        ticktock: getEntrySources([path.join(__dirname, 'public', 'src', 'client', 'ticktock.jsx')]),
         ticktockFlux: getEntrySources([path.join(__dirname, 'public', 'src', 'client', 'ticktockflux.jsx')])
     },
 
