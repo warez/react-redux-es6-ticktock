@@ -1,13 +1,5 @@
 import {Constant, TTModel} from 'ticktock-common'
 
-export function goToStateAction(index:number) {
-    return {
-        meta: {remote: true},
-        type: Constant.GOTO_STATE,
-        param: index
-    };
-}
-
 export function moveAction(cellTitle:string, team: string, index:number) {
     return{
         meta: {remote: true},
@@ -33,7 +25,6 @@ export function setStateAction(state:TTModel) {
 
 export function actions() {
     return {
-        gotoState: goToStateAction,
         move: moveAction,
         restart: restartAction,
         setState: setStateAction

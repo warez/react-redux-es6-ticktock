@@ -1,13 +1,5 @@
-var Common = require("./../ticktock-common/index");
-var Constant = Common.Constant;
-var TTModel = Common.TTModel;
-
-function goToStateAction(index) {
-    return {
-        type: Constant.GOTO_STATE,
-        param: index
-    };
-}
+const Common = require("./../ticktock-common/index");
+const Constant = Common.Constant;
 
 function moveAction(cellTitle, team, id) {
     return{
@@ -31,7 +23,6 @@ function setStateAction(state) {
 }
 
 let actions = {
-    goToStateAction: goToStateAction,
     moveAction: moveAction,
     restartAction: restartAction,
     setStateAction:setStateAction

@@ -19,13 +19,14 @@ export class GameRoom {
 
         this.store.subscribe(
             () => {
-                const state = this.store.getState().toJS();
+
+                const state = this.store.getState();
 
                 if(this._socketPlayer1)
-                    this._socketPlayer1.emit('state', state);
+                    this._socketPlayer1.emit('state', addPerClientProp(state,'X', id).toJS());
 
                 if(this._socketPlayer2)
-                    this._socketPlayer2.emit('state', state);
+                    this._socketPlayer2.emit('state', addPerClientProp(state,'O').toJS());
             }
         );
     }
@@ -52,7 +53,7 @@ export class GameRoom {
     registerSocket(socket, position, team) {
         const me = this;
         const state = this.store.getState();
-        const stateWithTeam = state.setIn(["clientProp","team"], team );
+        const stateWithTeam = addPerClientProp(state, team);
 
         this[position] = socket;
 
@@ -73,6 +74,10 @@ export class GameRoom {
 
         this.registerSocket(socket, position, team);
     }
+}
+
+function addPerClientProp(state, team) {
+    return state.setIn(["clientProp","team"], team );
 }
 
 function deleteEmptyRoom() {

@@ -17,7 +17,6 @@ const actions = function mapDispatchToProps(dispatch) {
 
     return {
         move: (title,team, index) => dispatch(moveAction(title, team, index)),
-        goToState: (index) => dispatch(goToStateAction(index)),
         restart: () => dispatch(restartAction())
     };
 };

@@ -1,9 +1,9 @@
-let Core = require("./core");
-let Common = require("./../ticktock-common/index");
+const Core = require("./core");
+const Common = require("./../ticktock-common/index");
 
-let createStore = require("redux").createStore;
-let Constant = Common.Constant;
-let TTModel = Common.TTModel;
+const createStore = require("redux").createStore;
+const Constant = Common.Constant;
+const TTModel = Common.TTModel;
 
 function reducer(state, action) {
 
@@ -17,9 +17,6 @@ function reducer(state, action) {
 
         case Constant.SET_STATE:
             return Core.setStateAction(state, action.param);
-
-        case Constant.GOTO_STATE:
-            return Core.jumpToStateAction(state, action.param);
 
         case Constant.MOVE:
             return Core.moveAction(state, action.param.cellTitle, action.param.team, action.param.index);

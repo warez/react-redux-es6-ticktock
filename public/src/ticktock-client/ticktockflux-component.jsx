@@ -138,7 +138,7 @@ export class TickTock extends React.Component {
                         {status} { winner && <button onClick={() => this.props.restart()}>Restart</button> }
                     </div>
 
-                    <History onChange={event => this.props.goToState(event.target.value)} history={history}/>
+                    <History history={history}/>
 
                 </div>
             </div>
