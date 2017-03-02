@@ -13,7 +13,13 @@ import io from 'socket.io-client';
 
 import {setStateAction} from './ttflux'
 
-const socket = io(`${location.protocol}//${location.hostname}:8090`);
+var opts = {
+    query: {
+        'gameType': 'ticktock',
+    }
+};
+
+const socket = io(`${location.protocol}//${location.hostname}:8090`, opts);
 
 export const store = makeStore(socket);
 

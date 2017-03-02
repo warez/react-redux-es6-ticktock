@@ -1,4 +1,4 @@
-import {Constant, TTModel} from './core.jsx'
+import {Constant, TTModel} from 'ticktock-common'
 
 export function goToStateAction(index:number) {
     return {

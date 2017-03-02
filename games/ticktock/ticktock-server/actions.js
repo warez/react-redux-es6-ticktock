@@ -1,13 +1,15 @@
-import {Constant, TTModel} from './core.jsx'
+var Common = require("./../ticktock-common/index");
+var Constant = Common.Constant;
+var TTModel = Common.TTModel;
 
-function goToStateAction(index:number) {
+function goToStateAction(index) {
     return {
         type: Constant.GOTO_STATE,
         param: index
     };
 }
 
-function moveAction(cellTitle: string, team: string, id:number) {
+function moveAction(cellTitle, team, id) {
     return{
         type: Constant.MOVE,
         param: {cellTitle: cellTitle, team: team, index: index}
@@ -21,7 +23,7 @@ function restartAction() {
     };
 }
 
-function setStateAction(state:TTModel) {
+function setStateAction(state) {
     return {
         type: Constant.SET_STATE,
         param: state
@@ -35,4 +37,4 @@ let actions = {
     setStateAction:setStateAction
 };
 
-export default actions;
+module.exports = actions;

@@ -1,5 +1,6 @@
-import {Constant, TTModel, move, setState, jumpToState, restart, setMyTeam} from './core.jsx'
-import { createStore, applyMiddleware, compose } from 'redux';
+import { move, setState, jumpToState, restart } from './core.jsx'
+import { Constant, TTModel } from 'ticktock-common'
+import { createStore, applyMiddleware, compose } from 'redux'
 
 function reducer(state = new TTModel(), action): TTModel {
 

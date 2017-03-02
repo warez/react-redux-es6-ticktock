@@ -1,17 +1,21 @@
 'use strict';
 // imports node modules
 const _ = require('lodash');
-import {makeStore} from './store.js';
 
-let gameArray = Array();
+import * as TickTockGame from "ticktock-server";
 
-export class Game {
+let games = [TickTockGame];
+let roomArray = Array();
 
-    constructor(id) {
+export class GameRoom {
+
+    constructor(id: string, gameType, storeMaker) {
+
         this._socketPlayer1 = undefined;
         this._socketPlayer2 = undefined;
+        this._gameType = gameType;
 
-        this.store = makeStore("GAME_ID_#" + id);
+        this.store = storeMaker("GAME_ID_#" + id);
 
         this.store.subscribe(
             () => {
@@ -24,6 +28,10 @@ export class Game {
                     this._socketPlayer2.emit('state', state);
             }
         );
+    }
+
+    getType() {
+        return this._gameType;
     }
 
     getState() {
@@ -55,7 +63,7 @@ export class Game {
         });
     }
 
-    putIntoGame(socket) {
+    addPlayer(socket) {
 
         if(this.getState() == "FULL")
             throw "This game is full";
@@ -67,34 +75,55 @@ export class Game {
     }
 }
 
-function clean() {
+function deleteEmptyRoom() {
 
-    _.remove(gameArray, function(n:Game) {
+    _.remove(roomArray, function(n:GameRoom) {
         return n.getState() === "EMPTY";
     });
 }
 
-function searchGame() {
+function searchFreeRoom(gameType: string) {
 
-    let game = _.find(gameArray, function(n:Game) {
-        return n.getState() === "WAIT_PLAYER";
+    let game = _.find(roomArray, function(n:GameRoom) {
+        return n.getState() === "WAIT_PLAYER" &&
+            n.getType() === gameType;
     });
 
     return game;
 }
 
+function searchGame(gameType: string) {
+
+    let game = _.find(games, function(game) {
+        return game.getType() === gameType;
+    });
+
+    return game;
+}
+
+function getRequiredType(socket) {
+    const type = socket.handshake.query.gameType;
+    return type;
+}
 
 
 export function newPlayer(socket) {
 
-    clean();
-
-    let game = searchGame();
-
+    const requiredGameType = getRequiredType(socket);
+    let game = searchGame(requiredGameType);
     if(!game) {
-        game = new Game(gameArray.length + 1000);
-        gameArray.push(game);
+        socket.emit("{error: 'no game found'}");
+        return;
     }
 
-    game.putIntoGame(socket);
+    let room = searchFreeRoom(requiredGameType);
+
+    if(!room) {
+        room = new GameRoom(roomArray.length + 1000, game.getType(), game.makeStore);
+        roomArray.push(room);
+    }
+
+    room.addPlayer(socket);
+
+    deleteEmptyRoom();
 }

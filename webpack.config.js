@@ -14,7 +14,7 @@ function getEntrySources(sources) {
 
 module.exports = {
     entry: {
-        ticktockFlux: getEntrySources([path.join(__dirname, 'public', 'src', 'client', 'ticktockflux.jsx')])
+        ticktockFlux: getEntrySources([path.join(__dirname, 'public', 'src', 'ticktock-client', 'ticktockflux.jsx')])
     },
 
     output: {
@@ -30,7 +30,7 @@ module.exports = {
     resolve: {
         alias: {
             'styles': path.join(__dirname, 'public', 'assets', 'css'),
-            'ttflux': path.join(__dirname, 'public', 'src', 'ttflux'),
+            'ttflux': path.join(__dirname, 'public', 'src', 'ticktock-client'),
         }
     },
 

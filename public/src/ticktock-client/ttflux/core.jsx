@@ -1,52 +1,5 @@
 import {List, Record} from 'immutable';
-
-export class Constant {
-    static get GOTO_STATE() { return 'GOTO_STATE'; }
-    static get RESTART() { return 'RESTART'; }
-    static get MOVE() { return 'MOVE'; }
-    static get SET_STATE() { return 'SET_STATE'; }
-}
-
-const WinnerStateRecord = Record({winnerSymbol:undefined,winnerRow:undefined});
-export class WinnerState extends WinnerStateRecord {
-
-    constructor(props) {
-        super(props);
-    }
-}
-
-const HistoryModelRecord = Record({
-    squares: List(new Array(9).fill(undefined)),
-    moveAt: undefined,
-    team: undefined
-});
-
-const ClientPropRecord = Record({team: undefined});
-
-export class HistoryModel extends HistoryModelRecord {
-
-    constructor(props) {
-        super(props);
-    }
-
-}
-
-const TTModelRecord = Record({
-    id: undefined,
-    clientProp: new ClientPropRecord(),
-    stepNumber: 0,
-    xIsNext: true,
-    winnerState: new WinnerStateRecord(),
-    history: List( [new HistoryModel()] )
-});
-
-export class TTModel extends TTModelRecord {
-
-    constructor(props) {
-        super(props);
-    }
-
-}
+import { calculateWinner, HistoryModel, TTModel} from 'ticktock-common'
 
 export function restart(state:TTModel) {
     return new TTModel({clientProp: state.get("clientProp")});
@@ -108,24 +61,4 @@ export function isMyMove(state: Record) {
 
     return (state.get("xIsNext") &&  team == 'X') ||
         ( !state.get("xIsNext") &&  team == 'O');
-}
-
-function calculateWinner(squares) {
-    const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-    for (let i = 0; i < lines.length; i++) {
-        const [a, b, c] = lines[i];
-        if (squares.get(a) && squares.get(a) === squares.get(b) && squares.get(a) === squares.get(c)) {
-            return new WinnerState( {winnerSymbol: squares.get(a), winnerRow: List(lines[i]) }) ;
-        }
-    }
-    return new WinnerState();
 }

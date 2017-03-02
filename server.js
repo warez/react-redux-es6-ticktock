@@ -2,7 +2,9 @@
 
 require('babel-register');
 
-require("./ttserver");
+require("./mainserver");
+
+global.__base = __dirname + '/';
 
 var config = require("./webpack.config.js");
 var webpack = require("webpack");

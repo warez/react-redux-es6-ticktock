@@ -12,7 +12,7 @@ export class History extends React.Component {
         const options = history.map((step, move) => {
 
             const codeDesc = move ? step.get("team") + ' at ' + step.get("moveAt") : '';
-            const desc = move ? codeDesc : 'Game start';
+            const desc = move ? codeDesc : 'GameRoom start';
 
             return (
                 <option value={move} key={move + 1}>{desc}</option>

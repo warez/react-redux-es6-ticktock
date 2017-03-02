@@ -1,0 +1,12 @@
+{
+  "name": "ticktock-common",
+  "version": "1.0.1",
+  "description": "Server client common part.",
+  "scripts": {
+  },
+  "dependencies": {
+    "immutable": "^3.8.1",
+    "lodash": "^4.17.4",
+    "redux": "^3.6.0"
+  }
+}
